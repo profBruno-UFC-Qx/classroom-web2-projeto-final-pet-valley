@@ -7,6 +7,7 @@ Sistema desenvolvido para processo acadêmico de adoção de animais
 ## :technologist: Membros da equipe
 
 418399, Lucas Ferreira Lima, Ciência da Computação
+
 412557, Raphael Carvalho Garcia, Ciência da Computação
 
 ## :bulb: Objetivo Geral
