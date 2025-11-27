@@ -1,10 +1,8 @@
-/* Reset e configurações globais */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import './base.css';
 
+/* Reset e configurações globais */
 html,
 body {
   height: 100%;
@@ -20,55 +18,52 @@ body {
   padding: 0;
 }
 
-/* Remove as regras de grid e flex do template original */
-@media (min-width: 1024px) {
-  body {
-    display: block;
-  }
-
-  #app {
-    display: block;
-    grid-template-columns: none;
-    padding: 0;
-  }
-}
-
-/* Garantir que o conteúdo principal ocupe o espaço disponível */
+/* Layout principal */
 .main-content {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* Ajustes para os componentes */
-.hero-section {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-}
-
-.pricing-section {
-  flex: 1;
-}
-
-/* Footer sempre na base */
-footer {
-  margin-top: auto;
-}
-
-/* Links globais */
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+/* Ajustes de responsividade */
+@media (max-width: 768px) {
+  .step-card, .feature-card {
+    margin-bottom: 20px;
   }
+  
+  .hero {
+    padding: 60px 0;
+  }
+
+  .steps-section,
+  .features-section {
+    padding: 40px 0;
+  }
+}
+
+/* Customizações do PrimeVue */
+:root {
+  --primary-color: var(--primary);
+  --primary-color-text: white;
+  --surface-ground: var(--support);
+  --surface-card: white;
+  --surface-border: var(--secondary);
+  --surface-hover: var(--accent);
+}
+
+/* Utilitários de borda e sombra */
+.border-primary {
+  border-color: var(--primary) !important;
+}
+
+.border-secondary {
+  border-color: var(--secondary) !important;
+}
+
+.shadow-sm {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
 }

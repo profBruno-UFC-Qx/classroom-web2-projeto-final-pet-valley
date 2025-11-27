@@ -1,10 +1,13 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="#">
-        <i class="pi pi-heart me-2"></i>
-        Pet Valley
-      </a>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid d-flex justify-content-between align-items-center px-4">
+      <!-- Logo e nome -->
+      <RouterLink class="navbar-brand fw-bold d-flex align-items-center" to="/">
+        <img src="@/assets/logo.png" style="width: 30px; height: auto; margin-right: 8px" alt="" />
+        <span style="color: var(--support)">Pet Valley</span>
+      </RouterLink>
+
+      <!-- Botão toggle (mobile) -->
       <button
         class="navbar-toggler"
         type="button"
@@ -13,13 +16,27 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+
+      <!-- Links -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
           <li class="nav-item">
-            <RouterLink to="/" class="nav-link">Home</RouterLink>
+            <RouterLink class="nav-link" to="/">Início</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink to="/login" class="nav-link">Login</RouterLink>
+            <RouterLink class="nav-link" to="/#como-funciona">Como Funciona</RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink class="nav-link" to="/animais">Animais</RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink class="nav-link" to="/organizacoes">Organizações</RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink class="nav-link" to="/contato">Contato</RouterLink>
+          </li>
+          <li class="nav-item ms-lg-3">
+            <RouterLink class="btn btn-primary" to="/cadastro">Cadastre-se</RouterLink>
           </li>
         </ul>
       </div>

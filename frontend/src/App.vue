@@ -1,11 +1,14 @@
 <template>
-  <RouterView />
+  <div id="app">
+    <RouterView />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 </script>
 
 <style>
-/* Estilos globais podem ser adicionados aqui */
+@import '@/assets/main.css';
 </style>
