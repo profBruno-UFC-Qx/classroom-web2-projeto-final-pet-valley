@@ -131,6 +131,8 @@ src/
   documentType: 'cpf' | 'cnpj'
   status: 'pending' | 'approved' | 'rejected'
   phone: string
+  email: string
+  password: string
   createdAt: Date
   updatedAt: Date
 }

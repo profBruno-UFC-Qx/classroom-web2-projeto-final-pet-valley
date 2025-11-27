@@ -33,6 +33,12 @@ export class Organization {
   @Column({ type: "text" })
   phone: string;
 
+  @Column({ type: "text", unique: true })
+  email: string;
+
+  @Column({ type: "text" })
+  password: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

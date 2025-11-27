@@ -5,7 +5,12 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import "reflect-metadata";
 import AppDataSource from "./utils/database";
+
+// Rotas
 import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/users.routes";
+import organizationRoutes from "./routes/organization.routes";
+import addressRoutes from './routes/address.routes';
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -22,14 +27,17 @@ app.use(express.json());
 // Inicializar banco de dados
 AppDataSource.initialize()
   .then(() => {
-    console.log("✅ Banco de dados conectado com sucesso");
+    console.log("Banco de dados conectado com sucesso");
   })
   .catch((error) => {
-    console.error("❌ Erro ao conectar no banco de dados:", error);
+    console.error("Erro ao conectar no banco de dados:", error);
   });
 
 // Rotas principais
 app.use("/auth", authRoutes);
+app.use('/users', userRoutes);
+app.use('/organizations', organizationRoutes);
+app.use('/addresses', addressRoutes);
 
 // Rota de saúde (teste rápido)
 app.get("/health", (req, res) => {
