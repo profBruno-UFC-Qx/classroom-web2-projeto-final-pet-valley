@@ -23,11 +23,17 @@ export class Animal {
   @Column({ type: "text" })
   breed: string;
 
+  @Column({ type: "text", enum: ["macho", "femea"] })
+  sex: "macho" | "femea";
+
   @Column({ type: "integer" })
   age: number;
 
-  @Column({ type: "integer" })
+  @Column({ type: "float" })
   size: number;
+
+  @Column({ type: "float" })
+  weight: number;
 
   @Column({ type: "text" })
   description: string;

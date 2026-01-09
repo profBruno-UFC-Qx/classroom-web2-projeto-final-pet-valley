@@ -7,6 +7,7 @@ import {
   AuthResponse,
   JwtPayload,
   UserRole,
+  RegisterRequest,
 } from "../types/auth.types";
 import { User } from "../entities/user";
 import { Organization } from "../entities/organization";
@@ -54,9 +55,9 @@ export class AuthService {
       }
 
       // Verificar se organization está aprovada
-      if (organization.status !== "approved") {
-        throw new Error("Organization not approved");
-      }
+      // if (organization.status !== "approved") {
+      //   throw new Error("Organization not approved");
+      // }
 
       const isPasswordValid = await bcrypt.compare(
         password,
@@ -139,4 +140,108 @@ export class AuthService {
       throw new Error("Invalid token");
     }
   }
+
+  async register(data: RegisterRequest): Promise<AuthResponse> {
+    const { isOrganization, password, email } = data;
+
+    // Verificar se email já existe em User ou Organization
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    const existingOrganization = await this.organizationRepository.findOne({
+      where: { email },
+    });
+
+    if (existingUser || existingOrganization) {
+      throw new Error("Email already in use");
+    }
+
+    // Verificar se document já existe (se fornecido)
+    if (data.document) {
+      const existingUserByDocument = await this.userRepository.findOne({
+        where: { document: data.document },
+      });
+
+      const existingOrgByDocument = await this.organizationRepository.findOne({
+        where: { document: data.document },
+      });
+
+      if (existingUserByDocument || existingOrgByDocument) {
+        throw new Error("Document already in use");
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    let userData: any;
+    let role: UserRole;
+
+    if (isOrganization) {
+      // Registrar Organization
+      const organization = this.organizationRepository.create({
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        phone: data.phone,
+        document: data.document,
+        documentType: data.documentType,
+        type: data.type,
+        status: "pending",
+      });
+
+      await this.organizationRepository.save(organization);
+
+      // Aqui futuramente deve ser verificado se a organização está aprovada
+      // Exemplo:
+      // if (organization.status !== "approved") { ... }
+
+      role = "organization";
+
+      userData = {
+        id: organization.id,
+        role,
+        name: organization.name,
+        email: organization.email,
+        type: organization.type,
+        status: organization.status,
+        documentType: organization.documentType,
+      };
+    } else {
+      // Registrar User (adopter)
+      const user = this.userRepository.create({
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        phone: data.phone,
+        document: data.document,
+        role: "adopter",
+      });
+
+      await this.userRepository.save(user);
+
+      role = "adopter";
+
+      userData = {
+        id: user.id,
+        role,
+        name: user.name,
+        email: user.email,
+        document: user.document,
+        phone: user.phone,
+      };
+    }
+
+    const token = jwt.sign(
+      { userId: userData.id, role } as JwtPayload,
+      process.env.JWT_SECRET || "fallback-secret",
+      { expiresIn: "30d" }
+    );
+
+    return {
+      user: userData,
+      token,
+    };
+  }
+
 }

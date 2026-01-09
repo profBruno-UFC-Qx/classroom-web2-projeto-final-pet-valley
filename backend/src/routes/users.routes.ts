@@ -5,6 +5,7 @@ import {
   getUser,
   updateUser,
   deleteUser,
+  getFilteredUsers,
 } from "../controllers/users.controller";
 import { authenticateToken } from "../middleware/auth.middleware";
 import {
@@ -18,7 +19,8 @@ const router = Router();
 router.post("/", createUser);
 
 // Apenas admin pode listar todos os usuários
-router.get("/", authenticateToken, requireAdmin, getUsers);
+// router.get("/", getFilteredUsers);
+router.get("/", authenticateToken, requireAdmin, getFilteredUsers);
 
 // Usuário pode ver seu próprio perfil, admin pode ver qualquer um
 router.get("/:id", authenticateToken, requireAdminOrAdopter, getUser);

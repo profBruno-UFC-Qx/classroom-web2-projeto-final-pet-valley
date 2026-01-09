@@ -1,7 +1,8 @@
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import AppDataSource from '../utils/database';
 import bcrypt from 'bcrypt';
 import { User } from '../entities/user';
+import { UserUpdateDTO } from '../types/user.types';
 
 export class UserService {
   private userRepository: Repository<User>;
@@ -19,16 +20,16 @@ export class UserService {
     role: 'admin' | 'adopter';
   }): Promise<User> {
     // Verificar se email já existe
-    const existingUser = await this.userRepository.findOne({ 
-      where: { email: userData.email } 
+    const existingUser = await this.userRepository.findOne({
+      where: { email: userData.email }
     });
     if (existingUser) {
       throw new Error('Email already registered');
     }
 
     // Verificar se documento já existe
-    const existingDocument = await this.userRepository.findOne({ 
-      where: { document: userData.document } 
+    const existingDocument = await this.userRepository.findOne({
+      where: { document: userData.document }
     });
     if (existingDocument) {
       throw new Error('Document already registered');
@@ -47,11 +48,52 @@ export class UserService {
 
   async getAllUsers(page: number = 1, limit: number = 10) {
     const skip = (page - 1) * limit;
-    
+
     const [users, total] = await this.userRepository.findAndCount({
       skip,
       take: limit,
       order: { createdAt: 'DESC' }
+    });
+
+    return {
+      users: users.map(user => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      }),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
+  async getFilteredUsers(
+    page: number = 1,
+    limit: number = 10,
+    filters?: { name?: string; document?: string; email?: string }
+  ) {
+    const skip = (page - 1) * limit;
+
+    const where: any = {
+      role: 'adopter'
+    };
+
+    if (filters?.name) {
+      where.name = ILike(`%${filters.name}%`);
+    }
+    if (filters?.document) {
+      where.document = ILike(`%${filters.document}%`);
+    }
+    if (filters?.email) {
+      where.email = ILike(`%${filters.email}%`);
+    }
+
+    const [users, total] = await this.userRepository.findAndCount({
+      where: where,
+      skip: skip,
+      take: limit,
+      order: {
+        createdAt: 'DESC'
+      }
     });
 
     return {
@@ -70,23 +112,28 @@ export class UserService {
     if (!user) {
       throw new Error('User not found');
     }
-    
+
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
-  async updateUser(id: string, updateData: Partial<User>) {
+  async updateUser(id: string, updateData: UserUpdateDTO) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new Error('User not found');
     }
 
-    // Não permitir alterar role via update comum
-    if (updateData.role) {
-      delete updateData.role;
+    const dataToUpdate: Partial<UserUpdateDTO> = {};
+
+    if (updateData.name !== undefined) dataToUpdate.name = updateData.name;
+    if (updateData.document !== undefined) dataToUpdate.document = updateData.document;
+    if (updateData.phone !== undefined) dataToUpdate.phone = updateData.phone;
+    if (updateData.email !== undefined) dataToUpdate.email = updateData.email;
+
+    if (Object.keys(dataToUpdate).length > 0) {
+      await this.userRepository.update(id, dataToUpdate);
     }
 
-    await this.userRepository.update(id, updateData);
     return await this.getUserById(id);
   }
 

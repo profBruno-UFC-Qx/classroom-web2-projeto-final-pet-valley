@@ -17,13 +17,14 @@ export const getOrganizations = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    const status = req.query.status as string;
 
-    const result = await organizationService.getAllOrganizations(
-      page,
-      limit,
-      status
-    );
+    const filters = {
+      name: req.query.name as string | undefined,
+      document: req.query.document as string | undefined,
+      email: req.query.email as string | undefined,
+    };
+
+    const result = await organizationService.getAllOrganizations(page, limit, filters);
     res.status(200).json(result);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

@@ -1,7 +1,8 @@
-import { Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 import AppDataSource from "../utils/database";
 import { Organization } from "../entities/organization";
 import bcrypt from 'bcrypt';
+import { OrganizationUpdateDTO } from "../types/organization.types";
 
 export class OrganizationService {
   private organizationRepository: Repository<Organization>;
@@ -41,7 +42,8 @@ export class OrganizationService {
     const organization = this.organizationRepository.create({
       ...organizationData,
       password: hashedPassword,
-      status: "pending", // Sempre começa como pendente
+      status: "approved",
+      // status: "pending", // Sempre começa como pendente
     });
 
     return await this.organizationRepository.save(organization);
@@ -80,27 +82,39 @@ export class OrganizationService {
   async getAllOrganizations(
     page: number = 1,
     limit: number = 10,
-    status?: string
+    filters?: { name?: string; document?: string; email?: string }
   ) {
     const skip = (page - 1) * limit;
 
-    const where: Partial<Organization> = status
-      ? { status: status as "pending" | "approved" | "rejected" }
-      : {};
+    const where: any = {};
 
-    const [organizations, total] =
-      await this.organizationRepository.findAndCount({
-        where,
-        skip,
-        take: limit,
-        order: { createdAt: "DESC" },
-      });
+    if (filters?.name) {
+      where.name = ILike(`%${filters.name}%`);
+    }
+    if (filters?.document) {
+      where.document = ILike(`%${filters.document}%`);
+    }
+    if (filters?.email) {
+      where.email = ILike(`%${filters.email}%`);
+    }
+
+    const [organizations, total] = await this.organizationRepository.findAndCount({
+      where: where,
+      skip: skip,
+      take: limit,
+      order: {
+        createdAt: 'DESC'
+      }
+    });
 
     return {
-      organizations,
+      organizations: organizations.map(organization => {
+        const { password, ...organizationWithoutPassword } = organization;
+        return organizationWithoutPassword;
+      }),
       total,
       page,
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(total / limit)
     };
   }
 
@@ -116,21 +130,23 @@ export class OrganizationService {
     return organization;
   }
 
-  async updateOrganization(id: string, updateData: Partial<Organization>) {
-    const organization = await this.organizationRepository.findOne({
-      where: { id },
-    });
-
-    if (!organization) {
-      throw new Error("Organization not found");
+  async updateOrganization(id: string, updateData: OrganizationUpdateDTO) {
+    const user = await this.organizationRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new Error('Organization not found');
     }
 
-    // Não permitir alterar status via update comum
-    if (updateData.status) {
-      delete updateData.status;
+    const dataToUpdate: Partial<OrganizationUpdateDTO> = {};
+
+    if (updateData.name !== undefined) dataToUpdate.name = updateData.name;
+    if (updateData.document !== undefined) dataToUpdate.document = updateData.document;
+    if (updateData.phone !== undefined) dataToUpdate.phone = updateData.phone;
+    if (updateData.email !== undefined) dataToUpdate.email = updateData.email;
+
+    if (Object.keys(dataToUpdate).length > 0) {
+      await this.organizationRepository.update(id, dataToUpdate);
     }
 
-    await this.organizationRepository.update(id, updateData);
     return await this.getOrganizationById(id);
   }
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
-import { LoginCredentials, AuthenticatedRequest } from "../types/auth.types";
+import { LoginCredentials, AuthenticatedRequest, RegisterRequest } from "../types/auth.types";
 
 const authService = new AuthService();
 
@@ -18,6 +18,16 @@ export const login = async (req: Request, res: Response) => {
     res.status(200).json(authResponse);
   } catch (error: any) {
     res.status(401).json({ message: error.message });
+  }
+};
+
+export const register = async (req: Request, res: Response) => {
+  try {
+    const registerData: RegisterRequest = req.body;
+    const authResponse = await authService.register(registerData);
+    res.status(201).json(authResponse);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
   }
 };
 

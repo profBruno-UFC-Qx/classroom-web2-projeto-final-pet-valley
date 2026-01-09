@@ -11,6 +11,7 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/users.routes";
 import organizationRoutes from "./routes/organization.routes";
 import addressRoutes from './routes/address.routes';
+import animalRoutes from "./routes/animal.routes";
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -38,6 +39,7 @@ app.use("/auth", authRoutes);
 app.use('/users', userRoutes);
 app.use('/organizations', organizationRoutes);
 app.use('/addresses', addressRoutes);
+app.use('/animals', animalRoutes);
 
 // Rota de saúde (teste rápido)
 app.get("/health", (req, res) => {
@@ -73,8 +75,8 @@ app.use(
 );
 
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
+  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
 });
 
 export default app;

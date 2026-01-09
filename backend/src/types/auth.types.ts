@@ -39,3 +39,19 @@ export interface AuthenticatedRequest extends Request {
     status?: "pending" | "approved" | "rejected";
   };
 }
+
+export interface RegisterRequest {
+  // Controle de fluxo
+  isOrganization: boolean;
+
+  // Campos comuns
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  document: string;
+
+  // Campos exclusivos de Organization (opcionais para User)
+  type?: "ong" | "protector";
+  documentType?: "cpf" | "cnpj";
+}
