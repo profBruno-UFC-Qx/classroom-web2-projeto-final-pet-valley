@@ -30,8 +30,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
 
 const plans = ref([
   {

@@ -12,6 +12,7 @@ node_modules
 
 # Sistema
 .DS_Store
+.github
 
 # Build
 dist

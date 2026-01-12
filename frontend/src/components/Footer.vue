@@ -1,5 +1,5 @@
 <template>
-  <footer>
+  <footer id="footer">
     <div class="container">
       <div class="row">
         <div class="col-lg-4 mb-4 mb-lg-0">
@@ -23,10 +23,10 @@
             <RouterLink to="/" class="mb-2">Início</RouterLink>
             <RouterLink to="/sobre" class="mb-2">Sobre Nós</RouterLink>
             <RouterLink to="/animais" class="mb-2">Animais</RouterLink>
-            <RouterLink to="/organizacoes" class="mb-2">Organizações</RouterLink>
+            <!-- <RouterLink to="/organizacoes" class="mb-2">Organizações</RouterLink> -->
           </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+        <!-- <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
           <h5 class="mb-3">Recursos</h5>
           <div class="footer-links d-flex flex-column">
             <RouterLink to="/blog" class="mb-2">Blog</RouterLink>
@@ -34,15 +34,15 @@
             <RouterLink to="/termos" class="mb-2">Termos de Uso</RouterLink>
             <RouterLink to="/privacidade" class="mb-2">Política de Privacidade</RouterLink>
           </div>
-        </div>
+        </div> -->
         <div class="col-lg-3">
           <h5 class="mb-3">Contato</h5>
           <div class="footer-links d-flex flex-column">
             <p class="mb-2">
-              <i class="bi bi-geo-alt me-2"></i> São Paulo, SP
+              <i class="bi bi-geo-alt me-2"></i> Quixadá, CE
             </p>
             <p class="mb-2">
-              <i class="bi bi-telephone me-2"></i> (11) 9999-9999
+              <i class="bi bi-telephone me-2"></i> (85) 99999-9999
             </p>
             <p class="mb-2">
               <i class="bi bi-envelope me-2"></i> contato@petvalley.com

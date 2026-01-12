@@ -3,17 +3,12 @@
     <div class="container-fluid d-flex justify-content-between align-items-center px-4">
       <!-- Logo e nome -->
       <RouterLink class="navbar-brand fw-bold d-flex align-items-center" to="/">
-        <img src="@/assets/logo.png" style="width: 30px; height: auto; margin-right: 8px" alt="" />
+        <img src="/logo.png" style="width: 30px; height: auto; margin-right: 8px" alt="" />
         <span style="color: var(--support)">Pet Valley</span>
       </RouterLink>
 
       <!-- Botão toggle (mobile) -->
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -24,19 +19,22 @@
             <RouterLink class="nav-link" to="/">Início</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/#como-funciona">Como Funciona</RouterLink>
+            <RouterLink class="nav-link" to="/#sobre-nos">Sobre nós</RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink class="nav-link" to="/#como-funciona">Adoção</RouterLink>
           </li>
           <li class="nav-item">
             <RouterLink class="nav-link" to="/animais">Animais</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/organizacoes">Organizações</RouterLink>
+            <RouterLink class="nav-link" to="/#footer">Contato</RouterLink>
           </li>
-          <li class="nav-item">
-            <RouterLink class="nav-link" to="/contato">Contato</RouterLink>
+          <li v-if="authStore.isAuthenticated" class="nav-item ms-lg-3">
+            <div class="btn btn-primary" @click="authStore.logout()">Sair</div>
           </li>
-          <li class="nav-item ms-lg-3">
-            <RouterLink class="btn btn-primary" to="/cadastro">Cadastre-se</RouterLink>
+          <li v-else class="nav-item ms-lg-3">
+            <RouterLink class="btn btn-primary" to="/login">Login</RouterLink>
           </li>
         </ul>
       </div>
@@ -46,4 +44,7 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
+const authStore = useAuthStore()
+
 </script>

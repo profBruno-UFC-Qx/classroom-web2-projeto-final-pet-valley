@@ -27,10 +27,11 @@ body {
 
 /* Ajustes de responsividade */
 @media (max-width: 768px) {
-  .step-card, .feature-card {
+  .step-card,
+  .feature-card {
     margin-bottom: 20px;
   }
-  
+
   .hero {
     padding: 60px 0;
   }
@@ -43,15 +44,30 @@ body {
 
 /* Customizações do PrimeVue */
 :root {
-  --primary-color: var(--primary);
-  --primary-color-text: white;
-  --surface-ground: var(--support);
-  --surface-card: white;
-  --surface-border: var(--secondary);
-  --surface-hover: var(--accent);
+  --primary: #dd6b20;
+  --secondary: #319795;
+  --support: #f7e9d7;
+  --accent: #285e61;
+
+  /* Componentes PrimeVue com suas cores */
+  --p-primary-color: var(--primary);
+  --p-primary-contrast-color: #ffffff;
+  --p-secondary-color: var(--secondary);
 }
 
-/* Utilitários de borda e sombra */
+.p-button {
+  background: var(--primary) !important;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.p-button-secondary {
+  background: var(--secondary) !important;
+  background-color: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+  color: #fff !important;
+}
+
 .border-primary {
   border-color: var(--primary) !important;
 }
@@ -66,4 +82,40 @@ body {
 
 .shadow {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-table-rounded {
+  --btn-border-color: #319795;
+  --btn-bg-hover: #eff6ff;
+  --btn-shadow-color: rgba(59, 130, 246, 0.15);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: 2px solid var(--btn-border-color);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-table-rounded i {
+  font-size: 1rem;
+  color: var(--btn-border-color);
+}
+
+/* Hover */
+.btn-table-rounded:hover {
+  background-color: var(--btn-bg-hover);
+  box-shadow: 0 0 0 3px var(--btn-shadow-color);
+}
+
+/* Focus */
+.btn-table-rounded:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--btn-shadow-color);
 }
