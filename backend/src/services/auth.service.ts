@@ -8,7 +8,7 @@ import {
   JwtPayload,
   UserRole,
   RegisterRequest,
-} from "../types/auth.types";
+} from "../interface/auth.interface";
 import { User } from "../entities/user";
 import { Organization } from "../entities/organization";
 

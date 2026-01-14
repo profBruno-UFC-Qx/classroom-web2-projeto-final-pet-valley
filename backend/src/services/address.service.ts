@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm';
 import AppDataSource from '../utils/database';
 import { Address } from '../entities/address';
+import { AddressBodyDto } from '../interface/address.interface';
 
 export class AddressService {
     private addressRepository: Repository<Address>;
@@ -9,16 +10,7 @@ export class AddressService {
         this.addressRepository = AppDataSource.getRepository(Address);
     }
 
-    async createAddress(addressData: {
-        ownerId: string;
-        cep: number;
-        street: string;
-        neighborhood: string;
-        city: string;
-        state: string;
-        houseNumber: number;
-        complement?: string;
-    }): Promise<Address> {
+    async createAddress(addressData: AddressBodyDto): Promise<Address> {
         // Verificar se já existe endereço para este ownerId
         const existingAddress = await this.addressRepository.findOne({
             where: { ownerId: addressData.ownerId }
@@ -43,14 +35,22 @@ export class AddressService {
         return !!address;
     }
 
-    async updateAddress(ownerId: string, updateData: Partial<Address>): Promise<Address> {
+    async updateAddress(ownerId: string, updateData: Partial<AddressBodyDto>): Promise<Address> {
         const address = await this.getAddressByOwnerId(ownerId);
 
         if (!address) {
             throw new Error('Address not found');
         }
 
-        await this.addressRepository.update(address.id, updateData);
+        // Merge existing address data with the new update data
+        const updatedAddressData = {
+            ...address,
+            ...Object.fromEntries(
+                Object.entries(updateData).filter(([_, value]) => value !== undefined && value !== "")
+            )
+        };
+
+        await this.addressRepository.update(address.id, updatedAddressData);
         return await this.getAddressByOwnerId(ownerId) as Address;
     }
 

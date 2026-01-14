@@ -29,14 +29,9 @@ const router = createRouter({
       component: () => import('../views/Animals.vue')
     },
     {
-      path: '/organizacoes',
-      name: 'organizations',
-      component: () => import('../views/Organizations.vue')
-    },
-    {
-      path: '/organizacoes/cadastro',
-      name: 'organization-register',
-      component: () => import('../views/OrganizationRegister.vue')
+      path: '/animais/:id',
+      name: 'animal-detail',
+      component: () => import('../views/AnimalDetail.vue')
     },
     // {
     //   path: '/termos',
@@ -74,21 +69,42 @@ const router = createRouter({
       meta: { requiresAuth: true, role: 'organization' },
       children: [
         {
-          path: 'dashboard',
-          name: 'organization-dashboard',
-          component: () => import('../views/organization/Dashboard.vue')
-        },
-        {
           path: 'animais',
           name: 'organization-animals',
           component: () => import('../views/organization/Animals.vue')
-        }
+        },
+        {
+          path: 'perfil',
+          name: 'organization-profile',
+          component: () => import('../views/organization/Profile.vue')
+        },
+        {
+          path: 'endereco',
+          name: 'organization-address',
+          component: () => import('../views/organization/Address.vue')
+        },
       ]
     },
     {
-      path: '/endereco',
-      name: 'address',
-      component: () => import('../views/Address.vue')
+      path: '/adopter',
+      meta: { requiresAuth: true, role: 'adopter' },
+      children: [
+        {
+          path: 'perfil',
+          name: 'adopter-profile',
+          component: () => import('../views/adopter/Profile.vue')
+        },
+        {
+          path: 'endereco',
+          name: 'address',
+          component: () => import('../views/adopter/Address.vue')
+        },
+      ]
+    },
+    {
+      path: '/adocoes',
+      name: 'adoptions',
+      component: () => import('../views/Adoption.vue')
     },
     {
       path: '/:pathMatch(.*)*',
@@ -114,7 +130,7 @@ router.beforeEach((to) => {
       case 'admin':
         return '/admin/dashboard'
       case 'organization':
-        return '/org/dashboard'
+        return '/org/animais'
       case 'adopter':
         return '/'
       default:

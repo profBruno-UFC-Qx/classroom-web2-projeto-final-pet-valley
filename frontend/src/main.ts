@@ -34,6 +34,7 @@ import Dialog from 'primevue/dialog';
 import FileUpload from 'primevue/fileupload';
 import Textarea from 'primevue/textarea';
 import InputNumber from 'primevue/inputnumber';
+import Divider from 'primevue/divider';
 
 import App from './App.vue'
 import router from './router'
@@ -71,5 +72,6 @@ app.component('Dialog', Dialog)
 app.component('FileUpload', FileUpload)
 app.component('Textarea', Textarea)
 app.component('InputNumber', InputNumber)
+app.component('Divider', Divider)
 
 app.mount('#app')

@@ -11,7 +11,6 @@ export interface Address {
 }
 
 export interface CreateAddressDTO {
-    ownerId: string;
     cep: string;
     street: string;
     neighborhood: string;

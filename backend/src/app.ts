@@ -38,7 +38,7 @@ AppDataSource.initialize()
 app.use("/auth", authRoutes);
 app.use('/users', userRoutes);
 app.use('/organizations', organizationRoutes);
-app.use('/addresses', addressRoutes);
+app.use('/address', addressRoutes);
 app.use('/animals', animalRoutes);
 
 // Rota de saúde (teste rápido)

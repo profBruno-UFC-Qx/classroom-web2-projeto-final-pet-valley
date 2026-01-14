@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
-import { AuthenticatedRequest } from "../types/auth.types";
+import { AuthenticatedRequest } from "../interface/auth.interface";
 
 const userService = new UserService();
 
@@ -52,6 +52,15 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
+export const getUserData = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const user = await userService.getUserById(req.user!.id);
+    res.status(200).json(user);
+  } catch (error: any) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
 export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
     // Usuário só pode atualizar seu próprio perfil, admin pode atualizar qualquer um
@@ -61,6 +70,18 @@ export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
 
     const user = await userService.updateUser(req.params.id, req.body);
     res.status(200).json(user);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const updatePassword = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+    
+    const result = await userService.updatePassword(id, newPassword);
+    res.status(200).json(result);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }

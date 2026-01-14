@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getOrganizations, createOrg, updateOrganization, deleteOrganization, getAllOrganizations } from '@/services/organization'
+import { getOrganizations, createOrg, updateOrganization, deleteOrganization, getAllOrganizations, getOrganization, updatePassword, getOrganizationByToken } from '@/services/organization'
 import type {
     Organization,
     OrganizationCreateDTO,
@@ -7,6 +7,7 @@ import type {
     OrganizationUpdateDTO,
     OrganizationSelectOption
 } from '@/types/organization.type'
+import type { ChangePassword } from '@/types/auth.type'
 
 export const useOrganizationStore = defineStore('organization', {
     state: () => ({
@@ -18,6 +19,38 @@ export const useOrganizationStore = defineStore('organization', {
     }),
 
     actions: {
+        async fetchOrganizationById(id: string): Promise<Organization> {
+            this.loading = true
+            this.error = null
+
+            try {
+                const organization = await getOrganization(id)
+                return organization
+            } catch (err) {
+                console.error(err)
+                this.error = 'Erro ao buscar organização'
+                throw err
+            } finally {
+                this.loading = false
+            }
+        },
+
+        async fetchOrganizationByToken(): Promise<Organization> {
+            this.loading = true
+            this.error = null
+
+            try {
+                const organization = await getOrganizationByToken()
+                return organization
+            } catch (err) {
+                console.error(err)
+                this.error = 'Erro ao buscar organização'
+                throw err
+            } finally {
+                this.loading = false
+            }
+        },
+
         async fetchOrganizationOptions() {
             try {
                 this.loading = true
@@ -86,6 +119,21 @@ export const useOrganizationStore = defineStore('organization', {
                 return updatedOrganization
             } catch (err) {
                 this.error = 'Erro ao atualizar organização'
+                throw err
+            } finally {
+                this.loading = false
+            }
+        },
+
+        async updatePassword(id: string, payload: ChangePassword) {
+            this.loading = true
+            this.error = null
+
+            try {
+                await updatePassword(payload, id)
+                return true
+            } catch (err) {
+                this.error = 'Erro ao atualizar senha'
                 throw err
             } finally {
                 this.loading = false

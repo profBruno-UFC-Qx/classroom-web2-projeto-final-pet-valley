@@ -26,9 +26,7 @@
 
         <div class="col-lg-6">
           <div class="about-image-wrapper">
-            <img
-              src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-              alt="Grupo de animais adotados felizes" class="about-image rounded shadow-lg" />
+            <img src="/cao-duvida.jpg" alt="Grupo de animais adotados felizes" class="about-image" />
           </div>
         </div>
       </div>
@@ -64,10 +62,6 @@
   color: var(--text-color);
 }
 
-.about-image-wrapper {
-  position: relative;
-}
-
 .about-image {
   width: 100%;
   height: auto;
@@ -75,10 +69,6 @@
   border-radius: 1rem;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
   transition: transform 0.4s ease;
-}
-
-.about-image:hover {
-  transform: translateY(-10px);
 }
 
 /* Responsividade */

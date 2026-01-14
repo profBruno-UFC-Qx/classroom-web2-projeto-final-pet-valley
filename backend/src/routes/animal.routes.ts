@@ -14,15 +14,19 @@ import { upload } from '../middleware/upload.middleware';
 
 const router = Router();
 
-// Rotas públicas
 router.get('/', getAnimals);
-router.get('/search', searchAnimals);
-router.get('/:id', getAnimal);
-router.get('/organization/:organizationId', getOrganizationAnimals);
 
-// Rotas protegidas
+router.get('/organization', authenticateToken, requireAdminOrOrganization, getOrganizationAnimals);
+
+router.get('/search', searchAnimals);
+
+router.get('/:id', getAnimal);
+
 router.post('/', authenticateToken, requireAdminOrOrganization, upload.array('images', 5), createAnimal);
+
 router.put('/:id', authenticateToken, requireAdminOrOrganization, updateAnimal);
+
 router.delete('/:id', authenticateToken, requireAdminOrOrganization, deleteAnimal);
+
 
 export default router;

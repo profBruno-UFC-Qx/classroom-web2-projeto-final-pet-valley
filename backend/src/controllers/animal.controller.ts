@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AnimalService } from '../services/animal.service';
-import { AnimalCreateDto, AnimalUpdateDto } from '../dto/animal.dto';
-import { AuthenticatedRequest } from '../types/auth.types';
+import { AuthenticatedRequest } from '../interface/auth.interface';
+import { AnimalCreateDto, AnimalUpdateDto } from '../interface/animal.interface';
 
 const animalService = new AnimalService();
 
@@ -57,13 +57,23 @@ export const getAnimal = async (req: Request, res: Response) => {
     }
 };
 
-export const getOrganizationAnimals = async (req: Request, res: Response) => {
+export const getOrganizationAnimals = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const { organizationId } = req.params;
+        console.log(req.user, "\n", "\n");
+        const organizationId: string = req.user?.id || "";
+
+        const filters = {
+            species: req.query.species as string,
+            breed: req.query.breed as string,
+            sex: req.query.sex as string,
+            vaccinated: req.query.vaccinated ? req.query.vaccinated === 'true' : undefined,
+            status: req.query.status as string,
+        };
+
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
 
-        const result = await animalService.getAnimalsByOrganization(organizationId, page, limit);
+        const result = await animalService.getAnimalsByOrganization(organizationId, filters, page, limit);
         res.status(200).json(result);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -123,10 +133,6 @@ export const searchAnimals = async (req: Request, res: Response) => {
             breed: req.query.breed as string,
             sex: req.query.sex as string,
             vaccinated: req.query.vaccinated ? req.query.vaccinated === 'true' : undefined,
-            // ageMin: req.query.ageMin ? parseInt(req.query.ageMin as string) : undefined,
-            // ageMax: req.query.ageMax ? parseInt(req.query.ageMax as string) : undefined,
-            // sizeMin: req.query.sizeMin ? parseInt(req.query.sizeMin as string) : undefined,
-            // sizeMax: req.query.sizeMax ? parseInt(req.query.sizeMax as string) : undefined,
             status: req.query.status as string,
         };
 

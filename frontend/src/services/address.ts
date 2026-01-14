@@ -3,7 +3,7 @@ import api from './api'
 
 export async function checkHasAddress(): Promise<Boolean> {
     const response = await api.get(`/address/has-address`)
-    return response.data
+    return response.data.hasAddress
 }
 
 export async function getMyAddress(): Promise<Address> {

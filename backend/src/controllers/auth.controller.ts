@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
-import { LoginCredentials, AuthenticatedRequest, RegisterRequest } from "../types/auth.types";
+import { LoginCredentials, AuthenticatedRequest, RegisterRequest } from "../interface/auth.interface";
 
 const authService = new AuthService();
 

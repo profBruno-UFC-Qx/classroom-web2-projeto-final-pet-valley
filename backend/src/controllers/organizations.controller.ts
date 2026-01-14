@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { OrganizationService } from "../services/organization.service";
-import { AuthenticatedRequest } from "../types/auth.types";
+import { AuthenticatedRequest } from "../interface/auth.interface";
 
 const organizationService = new OrganizationService();
 
@@ -37,6 +37,26 @@ export const getOrganization = async (req: Request, res: Response) => {
       req.params.id
     );
     res.status(200).json(organization);
+  } catch (error: any) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const getOrganizationToken = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const organization = await organizationService.getOrganizationById(
+      req.user!.id
+    );
+    res.status(200).json(organization);
+  } catch (error: any) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const getAllOrganizations = async (req: Request, res: Response) => {
+  try {
+    const organizations = await organizationService.getSelectOrganizations();
+    res.status(200).json(organizations);
   } catch (error: any) {
     res.status(404).json({ message: error.message });
   }
@@ -84,6 +104,18 @@ export const updateOrganization = async (
       req.body
     );
     res.status(200).json(organization);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const updatePassword = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    const result = await organizationService.updatePassword(id, newPassword);
+    res.status(200).json(result);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }

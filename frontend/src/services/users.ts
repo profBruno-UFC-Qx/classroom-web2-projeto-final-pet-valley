@@ -1,5 +1,6 @@
 import type { GetUsersParams, GetUsersResponse, User, UserCreateDTO, UserUpdateDTO } from '@/types/user.type'
 import api from './api'
+import type { ChangePassword } from '@/types/auth.type'
 
 export async function createAdopter(body: UserCreateDTO): Promise<User> {
     body.role = 'adopter'
@@ -21,8 +22,23 @@ export async function getUsers(body: GetUsersParams): Promise<GetUsersResponse> 
     return response.data
 }
 
+export async function getUser(id: string): Promise<User> {
+    const response = await api.get(`/users/${id}`)
+    return response.data
+}
+
+export async function getUserByToken(): Promise<User> {
+    const response = await api.get(`/users/data`)
+    return response.data
+}
+
 export async function updateUser(body: UserUpdateDTO, id: string): Promise<User> {
     const response = await api.put(`/users/${id}`, body)
+    return response.data
+}
+
+export async function updatePassword(body: ChangePassword, id: string): Promise<User> {
+    const response = await api.patch(`/users/${id}/password`, body)
     return response.data
 }
 

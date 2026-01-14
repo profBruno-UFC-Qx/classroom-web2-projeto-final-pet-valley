@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { AnimalsSearchResponse, SearchAnimalsParams, Animal, AnimalCreateDTO, AnimalUpdateDTO } from '@/types/animals'
-import { createAnimal, deleteAnimal, getAnimals, updateAnimal } from '@/services/animals'
+import { createAnimal, deleteAnimal, getAnimals, getAnimalsByOrganization, updateAnimal } from '@/services/animals'
 
 interface AnimalState {
     animals: Animal[]
@@ -35,6 +35,29 @@ export const useAnimalStore = defineStore('animals', {
 
             try {
                 const response: AnimalsSearchResponse = await getAnimals({
+                    page: this.page,
+                    limit: 8, // ou o valor que preferir
+                    ...params
+                })
+
+                this.animals = response.animals
+                this.total = response.total
+                this.page = response.page
+                this.totalPages = response.totalPages
+            } catch (error) {
+                this.error = error instanceof Error ? error.message : 'Erro ao carregar animais'
+                console.error('Erro no store:', error)
+            } finally {
+                this.loading = false
+            }
+        },
+
+        async fetchAnimalsByOrganization(params: SearchAnimalsParams = {}) {
+            this.loading = true
+            this.error = null
+
+            try {
+                const response: AnimalsSearchResponse = await getAnimalsByOrganization({
                     page: this.page,
                     limit: 8, // ou o valor que preferir
                     ...params

@@ -137,6 +137,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAnimalStore } from '@/stores/animalsStore'
 import type { AnimalFilters } from '@/types/animals'
 
@@ -149,6 +150,7 @@ import BaseCard from '@/components/BaseCard.vue'
 // PrimeVue Components (apenas Button mantido)
 import Button from 'primevue/button'
 
+const router = useRouter()
 const animalStore = useAnimalStore()
 
 const filters = ref<AnimalFilters>({
@@ -187,10 +189,7 @@ function clearFilters() {
 }
 
 function details(animalId: string) {
-  console.log(animalId);
-  // Lógica para navegar para a página de detalhes do animal
-  // Por exemplo, usando o Vue Router
-  // router.push({ name: 'AnimalDetails', params: { id: animalId } })
+  router.push({ name: 'animal-detail', params: { id: animalId } })
 }
 
 function getStatusText(status: string) {

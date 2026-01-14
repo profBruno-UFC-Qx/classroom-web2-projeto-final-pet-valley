@@ -74,8 +74,22 @@ const handleRegister = () => {
 const handleLogin = async () => {
   try {
     await authStore.login(form.value.email, form.value.password);
-    
     const isAdmin = computed(() => authStore.user?.role === 'admin')
+    const isOrganization = computed(() => authStore.user?.role === 'organization')
+
+    if (isAdmin.value) {
+      router.push('/admin/dashboard')
+      return
+    }
+
+    else if (isOrganization.value) {
+      router.push('/org/animais')
+      return
+    }
+    else {
+      router.push('/')
+    }
+
     if (isAdmin.value) {
       router.push('/admin/dashboard')
       return

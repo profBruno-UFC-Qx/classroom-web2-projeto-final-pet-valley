@@ -1,8 +1,8 @@
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import AppDataSource from '../utils/database';
-import { AnimalCreateDto, AnimalUpdateDto } from '../dto/animal.dto';
 import { Animal } from '../entities/animal';
 import { GitHubPagesService } from './github-pages.service';
+import { AnimalCreateDto, AnimalUpdateDto } from '../interface/animal.interface';
 
 export class AnimalService {
     private animalRepository: Repository<Animal>;
@@ -57,14 +57,55 @@ export class AnimalService {
         });
     }
 
-    async getAnimalsByOrganization(organizationId: string, page: number = 1, limit: number = 10): Promise<{ animals: Animal[], total: number, page: number, totalPages: number }> {
+    async getAnimalsByOrganization(
+        organizationId: string,
+        filters: {
+            species?: string;
+            breed?: string;
+            sex?: string;
+            vaccinated?: boolean;
+            status?: string;
+        },
+        page: number = 1,
+        limit: number = 10
+    ): Promise<{ animals: Animal[], total: number, page: number, totalPages: number }> {
         const skip = (page - 1) * limit;
 
+        // Construir objeto where dinamicamente
+        const where: any = {
+            organizationId // Filtro fixo para organizationId
+        };
+
+        // Aplicar filtros com ILike para campos de string
+        if (filters.species) {
+            where.species = ILike(`%${filters.species}%`);
+        }
+
+        if (filters.breed) {
+            where.breed = ILike(`%${filters.breed}%`);
+        }
+
+        if (filters.sex) {
+            where.sex = ILike(`%${filters.sex}%`);
+        }
+
+        // Filtros não-string (booleano)
+        if (filters.vaccinated !== undefined) {
+            where.vaccinated = filters.vaccinated;
+        }
+
+        // Se for passado um status no filtro
+        if (filters.status) {
+            where.status = filters.status;
+        }
+
         const [animals, total] = await this.animalRepository.findAndCount({
-            where: { organizationId },
-            skip,
+            where: where,
+            skip: skip,
             take: limit,
-            order: { createdAt: 'DESC' }
+            order: {
+                createdAt: 'DESC'
+            }
         });
 
         return {
@@ -82,7 +123,20 @@ export class AnimalService {
             throw new Error('Animal não encontrado');
         }
 
-        await this.animalRepository.update(id, updateData);
+        const fieldsToUpdate: Record<string, any> = {};
+        const allowedFields: (keyof AnimalUpdateDto)[] = [
+            'name', 'sex', 'species', 'breed', 'age', 'weight', 'size',
+            'description', 'vaccinated', 'neutered', 'specialNeeds'
+        ];
+
+        allowedFields.forEach(field => {
+            const value = updateData[field];
+            if (value !== undefined && value !== '') {
+                fieldsToUpdate[field] = value;
+            }
+        });
+
+        await this.animalRepository.update(id, fieldsToUpdate);
         return (await this.getAnimal(id)) as Animal;
     }
 
@@ -104,59 +158,55 @@ export class AnimalService {
         return { message: 'Animal deletado com sucesso' };
     }
 
-    async searchAnimals(filters: {
-        species?: string;
-        breed?: string;
-        sex?: string;
-        vaccinated?: boolean;
-        // ageMin?: number;
-        // ageMax?: number;
-        // sizeMin?: number;
-        // sizeMax?: number;
-        status?: string;
-    }, page: number = 1, limit: number = 10) {
+    async searchAnimals(
+        filters: {
+            species?: string;
+            breed?: string;
+            sex?: string;
+            vaccinated?: boolean;
+            status?: string;
+        },
+        page: number = 1,
+        limit: number = 10
+    ) {
         const skip = (page - 1) * limit;
 
-        let query = this.animalRepository.createQueryBuilder('animal')
-            .where('animal.status = :status', { status: 'available' });
+        // Construir objeto where dinamicamente
+        const where: any = {
+            status: 'available' // Filtro fixo para status
+        };
 
+        // Aplicar filtros com ILike para campos de string
         if (filters.species) {
-            query = query.andWhere('animal.species = :species', { species: filters.species });
+            where.species = ILike(`%${filters.species}%`);
         }
 
         if (filters.breed) {
-            query = query.andWhere('animal.breed LIKE :breed', { breed: `%${filters.breed}%` });
+            where.breed = ILike(`%${filters.breed}%`);
         }
 
         if (filters.sex) {
-            query = query.andWhere('animal.sex = :sex', { sex: filters.sex });
+            where.sex = ILike(`%${filters.sex}%`);
         }
 
+        // Filtros não-string (booleano)
         if (filters.vaccinated !== undefined) {
-            query = query.andWhere('animal.vaccinated = :vaccinated', { vaccinated: filters.vaccinated });
+            where.vaccinated = filters.vaccinated;
         }
 
-        // if (filters.ageMin !== undefined) {
-        //     query = query.andWhere('animal.age >= :ageMin', { ageMin: filters.ageMin });
-        // }
+        // Se for passado um status diferente no filtro, sobrescreve o fixo
+        if (filters.status && filters.status !== 'available') {
+            where.status = filters.status;
+        }
 
-        // if (filters.ageMax !== undefined) {
-        //     query = query.andWhere('animal.age <= :ageMax', { ageMax: filters.ageMax });
-        // }
-
-        // if (filters.sizeMin !== undefined) {
-        //     query = query.andWhere('animal.size >= :sizeMin', { sizeMin: filters.sizeMin });
-        // }
-
-        // if (filters.sizeMax !== undefined) {
-        //     query = query.andWhere('animal.size <= :sizeMax', { sizeMax: filters.sizeMax });
-        // }
-
-        const [animals, total] = await query
-            .skip(skip)
-            .take(limit)
-            .orderBy('animal.createdAt', 'DESC')
-            .getManyAndCount();
+        const [animals, total] = await this.animalRepository.findAndCount({
+            where: where,
+            skip: skip,
+            take: limit,
+            order: {
+                createdAt: 'DESC'
+            }
+        });
 
         return {
             animals,

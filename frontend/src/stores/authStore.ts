@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { User } from '@/types/user.type'
 import { login as loginService } from '@/services/auth'
 import { register as registerService } from '@/services/auth'
 import type { AuthUser, RegisterRequest } from '@/types/auth.type'

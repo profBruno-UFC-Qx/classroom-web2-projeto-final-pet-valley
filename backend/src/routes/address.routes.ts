@@ -16,10 +16,10 @@ const router = Router();
 router.use(authenticateToken);
 
 // Rotas para usuário gerenciar seu próprio endereço
-router.post('/', requireAdminOrAdopter, createAddress);
+router.post('/', createAddress);
 router.get('/my-address', requireAdminOrAdopter, getMyAddress);
 router.get('/has-address', requireAdminOrAdopter, checkHasAddress);
-router.put('/my-address', requireAdminOrAdopter, updateAddress);
+router.put('/my-address', updateAddress);
 router.delete('/my-address', requireAdminOrAdopter, deleteAddress);
 
 // Rota para admin buscar qualquer endereço por ID

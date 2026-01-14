@@ -30,8 +30,8 @@
           <li class="nav-item">
             <RouterLink class="nav-link" to="/#footer">Contato</RouterLink>
           </li>
-          <li v-if="authStore.isAuthenticated" class="nav-item ms-lg-3">
-            <div class="btn btn-primary" @click="authStore.logout()">Sair</div>
+          <li v-if="authStore.isAuthenticated" class="nav-item ms-lg-3" style="display: flex; align-items: center;">
+            <UserAvatar />
           </li>
           <li v-else class="nav-item ms-lg-3">
             <RouterLink class="btn btn-primary" to="/login">Login</RouterLink>
@@ -45,6 +45,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
+import UserAvatar from './UserAvatar.vue'
 const authStore = useAuthStore()
 
 </script>

@@ -19,6 +19,24 @@ export async function getAnimals(params: SearchAnimalsParams): Promise<AnimalsSe
     }
 }
 
+export async function getAnimalsByOrganization(params: SearchAnimalsParams): Promise<AnimalsSearchResponse> {
+    try {
+        const { data } = await api.get<AnimalsSearchResponse>(
+            '/animals/organization',
+            { params }
+        )
+        return data
+    } catch (error) {
+        console.error('Erro ao buscar animais:', error)
+        return {
+            animals: [],
+            total: 0,
+            page: 1,
+            totalPages: 0
+        }
+    }
+}
+
 export async function getAnimal(id: string): Promise<Animal> {
     const response = await api.get(`/animals/${id}`)
     return response.data

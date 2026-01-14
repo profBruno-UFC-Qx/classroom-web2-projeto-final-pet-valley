@@ -2,7 +2,7 @@ import { ILike, Repository } from "typeorm";
 import AppDataSource from "../utils/database";
 import { Organization } from "../entities/organization";
 import bcrypt from 'bcrypt';
-import { OrganizationUpdateDTO } from "../types/organization.types";
+import { OrganizationUpdateDTO } from "../interface/organization.interface";
 
 export class OrganizationService {
   private organizationRepository: Repository<Organization>;
@@ -118,6 +118,17 @@ export class OrganizationService {
     };
   }
 
+  async getSelectOrganizations() {
+    const organizations = await this.organizationRepository.find({
+      select: ['id', 'name']
+    });
+
+    return organizations.map(org => ({
+      value: org.id,
+      label: org.name
+    }));
+  }
+
   async getOrganizationById(id: string) {
     const organization = await this.organizationRepository.findOne({
       where: { id },
@@ -148,6 +159,19 @@ export class OrganizationService {
     }
 
     return await this.getOrganizationById(id);
+  }
+
+  async updatePassword(id: string, newPassword: string) {
+    const organization = await this.organizationRepository.findOne({ where: { id } });
+    if (!organization) {
+      throw new Error('Organization not found');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.organizationRepository.update(id, { password: hashedPassword });
+
+    return { message: 'Password updated successfully' };
   }
 
   async deleteOrganization(id: string) {

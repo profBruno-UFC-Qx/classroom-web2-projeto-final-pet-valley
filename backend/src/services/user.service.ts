@@ -2,7 +2,7 @@ import { ILike, Repository } from 'typeorm';
 import AppDataSource from '../utils/database';
 import bcrypt from 'bcrypt';
 import { User } from '../entities/user';
-import { UserUpdateDTO } from '../types/user.types';
+import { UserUpdateDTO } from '../interface/user.interface';
 
 export class UserService {
   private userRepository: Repository<User>;
@@ -135,6 +135,19 @@ export class UserService {
     }
 
     return await this.getUserById(id);
+  }
+
+  async updatePassword(id: string, newPassword: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.userRepository.update(id, { password: hashedPassword });
+
+    return { message: 'Password updated successfully' };
   }
 
   async deleteUser(id: string) {

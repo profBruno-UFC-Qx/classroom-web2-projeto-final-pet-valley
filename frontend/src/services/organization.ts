@@ -1,5 +1,6 @@
 import type { GetOrganizationParams, GetOrganizationResponse, Organization, OrganizationCreateDTO, OrganizationSelectOption, OrganizationUpdateDTO } from '@/types/organization.type';
 import api from './api'
+import type { ChangePassword } from '@/types/auth.type';
 
 export async function createOrg(body: OrganizationCreateDTO): Promise<Organization> {
     try {
@@ -30,8 +31,23 @@ export async function getAllOrganizations(): Promise<OrganizationSelectOption[]>
     return response.data
 }
 
+export async function getOrganization(id: string): Promise<Organization> {
+    const response = await api.get(`/organizations/${id}`)
+    return response.data
+}
+
+export async function getOrganizationByToken(): Promise<Organization> {
+    const response = await api.get(`/organizations/data`)
+    return response.data
+}
+
 export async function updateOrganization(body: OrganizationUpdateDTO, id: string): Promise<Organization> {
     const response = await api.put(`/organizations/${id}`, body)
+    return response.data
+}
+
+export async function updatePassword(body: ChangePassword, id: string): Promise<Organization> {
+    const response = await api.patch(`/organizations/${id}/password`, body)
     return response.data
 }
 

@@ -1,17 +1,16 @@
 import { Request, Response } from 'express';
 import { AddressService } from '../services/address.service';
-import { AuthenticatedRequest } from '../types/auth.types';
+import { AuthenticatedRequest } from '../interface/auth.interface';
+import { AddressBodyDto } from '../interface/address.interface';
 
 const addressService = new AddressService();
 
 export const createAddress = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        // Usuário só pode criar endereço para si mesmo
-        if (req.user?.id !== req.body.ownerId) {
-            return res.status(403).json({ message: 'You can only create address for yourself' });
-        }
+        req.body.ownerId = req.user!.id; // Garantir que o ownerId é do usuário autenticado
+        const addressData: AddressBodyDto = req.body;
 
-        const address = await addressService.createAddress(req.body);
+        const address = await addressService.createAddress(addressData);
         res.status(201).json(address);
     } catch (error: any) {
         res.status(400).json({ message: error.message });

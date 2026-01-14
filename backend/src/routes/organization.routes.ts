@@ -7,11 +7,14 @@ import {
   rejectOrganization,
   updateOrganization,
   deleteOrganization,
+  getAllOrganizations,
+  updatePassword,
+  getOrganizationToken,
 } from "../controllers/organizations.controller";
 import { authenticateToken } from "../middleware/auth.middleware";
 import {
   requireAdmin,
-  requireAdminOrAdopter,
+  requireAdminOrOrganization,
 } from "../middleware/role.middleware";
 
 const router = Router();
@@ -22,8 +25,12 @@ router.post("/", createOrganization);
 // Listar organizações (público, mas com filtro por status)
 router.get("/", getOrganizations);
 
+router.get("/selected", getAllOrganizations);
+
+router.get("/data", authenticateToken, requireAdminOrOrganization, getOrganizationToken);
+
 // Ver organização específica (público)
-router.get("/:id", getOrganization);
+router.get("/:id", authenticateToken, requireAdminOrOrganization, getOrganization);
 
 // Apenas admin pode aprovar/rejeitar
 router.patch(
@@ -32,6 +39,9 @@ router.patch(
   requireAdmin,
   approveOrganization
 );
+
+router.patch("/:id/password", authenticateToken, requireAdminOrOrganization, updatePassword);
+
 router.patch(
   "/:id/reject",
   authenticateToken,

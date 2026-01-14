@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { getUsers, createAdopter, deleteUser, updateUser } from '@/services/users'
+import { getUsers, createAdopter, deleteUser, updateUser, getUser, updatePassword, getUserByToken } from '@/services/users'
 import type { User, UserCreateDTO, GetUsersParams, UserUpdateDTO } from '@/types/user.type'
+import type { ChangePassword } from '@/types/auth.type'
 
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -23,6 +24,38 @@ export const useUserStore = defineStore('user', {
                 this.error = 'Erro ao carregar usuários'
                 this.users = []
                 this.total = 0
+                throw err
+            } finally {
+                this.loading = false
+            }
+        },
+
+        async fetchUserById(id: string): Promise<User> {
+            this.loading = true
+            this.error = null
+
+            try {
+                const user = await getUser(id)
+                return user
+            } catch (err) {
+                console.error(err)
+                this.error = 'Erro ao buscar usuário'
+                throw err
+            } finally {
+                this.loading = false
+            }
+        },
+
+        async fetchUserByToken(): Promise<User> {
+            this.loading = true
+            this.error = null
+
+            try {
+                const user = await getUserByToken()
+                return user
+            } catch (err) {
+                console.error(err)
+                this.error = 'Erro ao buscar usuário'
                 throw err
             } finally {
                 this.loading = false
@@ -64,6 +97,21 @@ export const useUserStore = defineStore('user', {
                 return updatedUser
             } catch (err) {
                 this.error = 'Erro ao atualizar usuário'
+                throw err
+            } finally {
+                this.loading = false
+            }
+        },
+
+        async updatePassword(id: string, payload: ChangePassword) {
+            this.loading = true
+            this.error = null
+
+            try {
+                await updatePassword(payload, id)
+                return true
+            } catch (err) {
+                this.error = 'Erro ao atualizar senha'
                 throw err
             } finally {
                 this.loading = false
