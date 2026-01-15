@@ -8,10 +8,10 @@
         <ul class="sidebar-menu">
             <!-- ADMIN -->
             <template v-if="isAdmin">
-                <li class="sidebar-item" @click="go('/admin/dashboard')">
+                <!-- <li class="sidebar-item" @click="go('/admin/dashboard')">
                     <i class="pi pi-chart-line"></i>
                     <span>Dashboard</span>
-                </li>
+                </li> -->
 
                 <li class="sidebar-item" @click="go('/admin/usuarios')">
                     <i class="pi pi-users"></i>
@@ -49,8 +49,7 @@
                     <span>Endereço</span>
                 </li>
 
-                <!-- <li class="sidebar-item" @click="go('/adocoes')"> -->
-                <li class="sidebar-item">
+                <li class="sidebar-item" @click="go('/adocoes')">
                     <i class="pi pi-heart"></i>
                     <span>Adoções</span>
                 </li>

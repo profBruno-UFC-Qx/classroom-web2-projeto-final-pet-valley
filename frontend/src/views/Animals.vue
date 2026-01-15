@@ -20,13 +20,8 @@
 
             <div class="filter-group">
               <label class="filter-label">Raça</label>
-              <input
-                v-model="filters.breed"
-                type="text"
-                placeholder="Digite a raça"
-                class="filter-input"
-                @input="handleFilter"
-              />
+              <input v-model="filters.breed" type="text" placeholder="Digite a raça" class="filter-input"
+                @input="handleFilter" />
             </div>
 
             <div class="filter-group">
@@ -41,13 +36,8 @@
             <div class="filter-group">
               <label class="filter-label">Vacinado</label>
               <div class="checkbox-container">
-                <input
-                  v-model="filters.vaccinated"
-                  type="checkbox"
-                  id="vaccinated"
-                  class="filter-checkbox"
-                  @change="handleFilter"
-                />
+                <input v-model="filters.vaccinated" type="checkbox" id="vaccinated" class="filter-checkbox"
+                  @change="handleFilter" />
                 <label for="vaccinated" class="checkbox-custom"></label>
               </div>
             </div>
@@ -71,12 +61,7 @@
 
         <!-- Animals list -->
         <div v-else class="animals-grid">
-          <BaseCard
-            v-for="animal in animalStore.animals"
-            :key="animal.id"
-            class="animal-card"
-            hoverable
-          >
+          <BaseCard v-for="animal in animalStore.animals" :key="animal.id" class="animal-card" hoverable>
             <div class="animal-image-container">
               <img :src="animal.images[0]" :alt="animal.name" />
             </div>
@@ -90,22 +75,16 @@
               <p>Tamanho: {{ animal.size }}cm • Peso: {{ animal.weight }}kg</p>
               <p class="description">{{ animal.description }}</p>
               <div class="animal-actions">
-                <Button
-                  @click="details(animal.id)"
-                  label="Ver Detalhes"
-                  class="p-button-primary"
-                  :disabled="animal.status !== 'available'"
-                />
+                <Button @click="details(animal.id)" label="Ver Detalhes" class="p-button-primary"
+                  :disabled="animal.status !== 'available'" />
               </div>
             </div>
           </BaseCard>
         </div>
 
         <!-- No results -->
-        <div
-          v-if="!animalStore.loading && !animalStore.error && animalStore.animals.length === 0"
-          class="text-center py-5"
-        >
+        <div v-if="!animalStore.loading && !animalStore.error && animalStore.animals.length === 0"
+          class="text-center py-5">
           <i class="pi pi-search" style="font-size: 3rem; color: #ccc"></i>
           <h4 class="mt-3">Nenhum animal encontrado</h4>
           <p>Tente ajustar os filtros para ver mais resultados.</p>
@@ -113,21 +92,12 @@
 
         <!-- Pagination -->
         <div v-if="animalStore.totalPages > 1" class="pagination">
-          <Button
-            @click="animalStore.setPage(animalStore.page - 1)"
-            :disabled="animalStore.page === 1"
-            icon="pi pi-chevron-left"
-            class="p-button-outlined"
-          />
-          <span class="page-info"
-            >Página {{ animalStore.page }} de {{ animalStore.totalPages }}</span
-          >
-          <Button
-            @click="animalStore.setPage(animalStore.page + 1)"
-            :disabled="animalStore.page === animalStore.totalPages"
-            icon="pi pi-chevron-right"
-            class="p-button-outlined"
-          />
+          <Button @click="animalStore.setPage(animalStore.page - 1)" :disabled="animalStore.page === 1"
+            icon="pi pi-chevron-left" class="p-button-outlined" />
+          <span class="page-info">Página {{ animalStore.page }} de {{ animalStore.totalPages }}</span>
+          <Button @click="animalStore.setPage(animalStore.page + 1)"
+            :disabled="animalStore.page === animalStore.totalPages" icon="pi pi-chevron-right"
+            class="p-button-outlined" />
         </div>
       </div>
     </section>
@@ -141,14 +111,10 @@ import { useRouter } from 'vue-router'
 import { useAnimalStore } from '@/stores/animalsStore'
 import type { AnimalFilters } from '@/types/animals'
 
-// Components
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import SectionTitle from '@/components/SectionTitle.vue'
 import BaseCard from '@/components/BaseCard.vue'
-
-// PrimeVue Components (apenas Button mantido)
-import Button from 'primevue/button'
 
 const router = useRouter()
 const animalStore = useAnimalStore()
@@ -298,16 +264,16 @@ onMounted(() => {
   transition: opacity 0.2s ease;
 }
 
-.filter-checkbox:checked + .checkbox-custom {
+.filter-checkbox:checked+.checkbox-custom {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-.filter-checkbox:checked + .checkbox-custom::after {
+.filter-checkbox:checked+.checkbox-custom::after {
   opacity: 1;
 }
 
-.filter-checkbox:focus + .checkbox-custom {
+.filter-checkbox:focus+.checkbox-custom {
   box-shadow: 0 0 0 2px rgba(221, 107, 32, 0.2);
 }
 

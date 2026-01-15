@@ -28,13 +28,8 @@
               <img :src="animal.images[selectedImageIndex]" :alt="animal.name" />
             </div>
             <div v-if="animal.images.length > 1" class="images-gallery">
-              <div
-                v-for="(image, index) in animal.images"
-                :key="index"
-                @click="selectedImageIndex = index"
-                class="gallery-item"
-                :class="{ active: index === selectedImageIndex }"
-              >
+              <div v-for="(image, index) in animal.images" :key="index" @click="selectedImageIndex = index"
+                class="gallery-item" :class="{ active: index === selectedImageIndex }">
                 <img :src="image" :alt="`${animal.name} - ${index}`" />
               </div>
             </div>
@@ -106,11 +101,8 @@
 
             <!-- Adoption Button -->
             <div v-if="animal.status === 'available'" class="action-section">
-              <Button
-                @click="handleAdoption"
-                label="Iniciar Processo de Adoção"
-                class="p-button-primary adoption-button"
-              />
+              <Button @click="handleAdoption" label="Iniciar Processo de Adoção"
+                class="p-button-primary adoption-button" />
             </div>
 
             <div v-else class="unavailable-section">
@@ -123,18 +115,46 @@
 
     <Footer />
   </div>
+
+  <!-- Criar Modal -->
+  <Dialog v-model:visible="visible" modal :closable="false" header="Informações Iniciais" style="width: 30rem">
+    <button class="dialog-close" @click="visible = false">
+      <i class="pi pi-times"></i>
+    </button>
+    <form @submit.prevent="firstStepAdoption()">
+      <div class="field mb-3">
+        <label for="familyType" class="form-label">Tipo de família</label>
+        <Textarea id="familyType" v-model="quizForm.familyType" class="w-100"
+          placeholder="Descreva sua estrutura familiar" required />
+      </div>
+      <div class="field mb-3">
+        <label for="lifeStyle" class="form-label">Estilo de vida</label>
+        <Textarea id="lifeStyle" v-model="quizForm.lifeStyle" class="w-100" placeholder="Descreva seu estilo de vida"
+          required />
+      </div>
+      <div class="field mb-3">
+        <label for="idealCompanion" class="form-label">Companheiro(a) ideal</label>
+        <Textarea id="idealCompanion" v-model="quizForm.idealCompanion" class="w-100"
+          placeholder="Descreva seu companheiro(a) ideal" required />
+      </div>
+      <Button label="ENVIAR" type="submit" class="w-100 p-button-primary" :loading="adoptionStore.loading" />
+    </form>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Animal } from '@/types/animals'
-import { getAnimal } from '@/services/animals'
 
 // Components
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
-import Button from 'primevue/button'
+import { useAnimalStore } from '@/stores/animalsStore'
+import { useAuthStore } from '@/stores/authStore'
+import { useAdoptionsStore } from '@/stores/adoptionsStore'
+import type { CreateAdoptionRequest, InitialInquiryAnswers } from '@/types/adoptions'
+import { useAddressStore } from '@/stores/addressStore'
 
 // State
 const route = useRoute()
@@ -143,6 +163,18 @@ const animal = ref<Animal | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const selectedImageIndex = ref(0)
+const visible = ref(false)
+
+const authStore = useAuthStore()
+const animalStore = useAnimalStore()
+const adoptionStore = useAdoptionsStore()
+const addressStore = useAddressStore()
+
+const quizForm = ref<InitialInquiryAnswers>({
+  familyType: "",
+  lifeStyle: "",
+  idealCompanion: ""
+})
 
 // Methods
 const fetchAnimal = async () => {
@@ -150,7 +182,7 @@ const fetchAnimal = async () => {
     loading.value = true
     error.value = null
     const animalId = route.params.id as string
-    animal.value = await getAnimal(animalId)
+    animal.value = await animalStore.fetchAnimalById(animalId);
   } catch (err) {
     error.value = 'Erro ao carregar detalhes do animal. Tente novamente.'
     console.error(err)
@@ -168,18 +200,69 @@ const getStatusLabel = (status: string): string => {
   return statusMap[status] || status
 }
 
-const handleAdoption = () => {
-  alert('Tem que mexer aqui!!!')
-  // TODO: Implementar fluxo de adoção
+const handleAdoption = async () => {
+  if (authStore.isAuthenticated) {
+
+    const hasAddress = await addressStore.checkHasAddress();
+
+    if (!hasAddress) {
+      alert("Por favor, complete seu endereço antes de iniciar o processo de adoção.");
+      router.push('/adopter/endereco');
+      return;
+    }
+
+    quizForm.value = {
+      familyType: "",
+      lifeStyle: "",
+      idealCompanion: ""
+    };
+
+    visible.value = true;
+  } else {
+    router.push('/login');
+  }
 }
 
-// Lifecycle
+const firstStepAdoption = async () => {
+  const quiz: InitialInquiryAnswers = {
+    familyType: "",
+    lifeStyle: "",
+    idealCompanion: ""
+  }
+
+  const adoptionData: CreateAdoptionRequest = {
+    animal: animal.value!.id,
+    organization: animal.value!.organizationId,
+    adopterUser: authStore.user!.id,
+    initialInquiry_answers: quiz,
+  }
+
+  try {
+    await adoptionStore.createAdoption(adoptionData)
+    router.push('/adocoes')
+  } catch (error) {
+    console.error(error)
+
+    alert("Você já possui um processo de adoção em andamento para este animal.")
+  }
+}
+
 onMounted(() => {
   fetchAnimal()
 })
 </script>
 
 <style scoped>
+.dialog-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
 .animal-detail-page {
   min-height: 100vh;
   display: flex;
@@ -237,7 +320,7 @@ onMounted(() => {
 .main-image img {
   width: 100%;
   height: 400px;
-  object-fit: fill;
+  object-fit: cover;
   display: block;
   border-radius: 12px;
 }

@@ -59,7 +59,6 @@
             </template>
         </Card>
 
-
         <Footer />
     </div>
 </template>

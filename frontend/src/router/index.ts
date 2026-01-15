@@ -42,11 +42,11 @@ const router = createRouter({
       path: '/admin',
       meta: { requiresAuth: true, role: 'admin' },
       children: [
-        {
-          path: 'dashboard',
-          name: 'admin-dashboard',
-          component: () => import('../views/admin/Dashboard.vue')
-        },
+        // {
+        //   path: 'dashboard',
+        //   name: 'admin-dashboard',
+        //   component: () => import('../views/admin/Dashboard.vue')
+        // },
         {
           path: 'usuarios',
           name: 'admin-users',
@@ -104,7 +104,14 @@ const router = createRouter({
     {
       path: '/adocoes',
       name: 'adoptions',
-      component: () => import('../views/Adoption.vue')
+      component: () => import('../views/Adoptions.vue'),
+      meta: { requiresAuth: true, roles: ['organization', 'adopter'] }
+    },
+    {
+      path: '/adocoes/:id',
+      name: 'adoption-detail',
+      component: () => import('../views/Adoption.vue'),
+      meta: { requiresAuth: true, roles: ['organization', 'adopter'] }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -128,7 +135,7 @@ router.beforeEach((to) => {
     // usuário logado não pode ver páginas de guest
     switch (auth.user?.role) {
       case 'admin':
-        return '/admin/dashboard'
+        return '/admin/usuarios'
       case 'organization':
         return '/org/animais'
       case 'adopter':
@@ -148,13 +155,31 @@ router.beforeEach((to) => {
     // usuário logado, mas sem permissão para essa rota -> mandar para painel por role
     switch (auth.user?.role) {
       case 'admin':
-        return '/admin/dashboard'
+        return '/admin/usuarios'
       case 'organization':
-        return '/org/dashboard'
+        return '/org/animais'
       case 'adopter':
         return '/'
       default:
         return '/login'
+    }
+  }
+
+  // 3.5) Controle por múltiplas roles (meta.roles como array)
+  if (to.meta.roles && auth.isAuthenticated) {
+    const allowedRoles = to.meta.roles as string[]
+    if (!allowedRoles.includes(auth.user?.role || '')) {
+      // usuário logado, mas sem permissão para essa rota
+      switch (auth.user?.role) {
+        case 'admin':
+          return '/admin/usuarios'
+        case 'organization':
+          return '/org/animais'
+        case 'adopter':
+          return '/'
+        default:
+          return '/login'
+      }
     }
   }
 
@@ -165,9 +190,9 @@ router.beforeEach((to) => {
   if (to.path === '/' && auth.isAuthenticated && auth.user?.role !== 'adopter') {
     switch (auth.user?.role) {
       case 'admin':
-        return '/admin/dashboard'
+        return '/admin/usuarios'
       case 'organization':
-        return '/org/dashboard'
+        return '/org/animais'
       default:
         return '/login'
     }

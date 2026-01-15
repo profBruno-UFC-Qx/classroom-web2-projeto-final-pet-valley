@@ -119,3 +119,19 @@ body {
   outline: none;
   box-shadow: 0 0 0 3px var(--btn-shadow-color);
 }
+
+input[type='datetime-local'] {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  background-color: #fff;
+  color: #333;
+}
+
+input[type='datetime-local']:focus {
+  border-color: #2f9c95;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(47, 156, 149, 0.25);
+}

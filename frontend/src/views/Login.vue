@@ -78,7 +78,7 @@ const handleLogin = async () => {
     const isOrganization = computed(() => authStore.user?.role === 'organization')
 
     if (isAdmin.value) {
-      router.push('/admin/dashboard')
+      router.push('/admin/usuarios')
       return
     }
 
@@ -91,7 +91,7 @@ const handleLogin = async () => {
     }
 
     if (isAdmin.value) {
-      router.push('/admin/dashboard')
+      router.push('/admin/usuarios')
       return
     }
 

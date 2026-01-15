@@ -35,6 +35,8 @@ import FileUpload from 'primevue/fileupload';
 import Textarea from 'primevue/textarea';
 import InputNumber from 'primevue/inputnumber';
 import Divider from 'primevue/divider';
+import Image from 'primevue/image';
+
 
 import App from './App.vue'
 import router from './router'
@@ -73,5 +75,6 @@ app.component('FileUpload', FileUpload)
 app.component('Textarea', Textarea)
 app.component('InputNumber', InputNumber)
 app.component('Divider', Divider)
+app.component('Image', Image)
 
 app.mount('#app')

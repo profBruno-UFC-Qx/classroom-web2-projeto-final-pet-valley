@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
 import type { AnimalsSearchResponse, SearchAnimalsParams, Animal, AnimalCreateDTO, AnimalUpdateDTO } from '@/types/animals'
-import { createAnimal, deleteAnimal, getAnimals, getAnimalsByOrganization, updateAnimal } from '@/services/animals'
+import { createAnimal, deleteAnimal, getAnimal, getAnimals, getAnimalsByOrganization, updateAnimal } from '@/services/animals'
 
 interface AnimalState {
     animals: Animal[]
+    selectedAnimal: Animal | null
     total: number
     page: number
     totalPages: number
@@ -14,6 +15,7 @@ interface AnimalState {
 export const useAnimalStore = defineStore('animals', {
     state: (): AnimalState => ({
         animals: [],
+        selectedAnimal: null,
         total: 0,
         page: 1,
         totalPages: 0,
@@ -29,6 +31,29 @@ export const useAnimalStore = defineStore('animals', {
     },
 
     actions: {
+        async fetchAnimalById(id: string) {
+            this.loading = true
+            this.error = null
+
+            try {
+                const animal = await getAnimal(id)
+
+                this.selectedAnimal = animal
+
+                // opcional: manter sincronizado na lista
+                const index = this.animals.findIndex(a => a.id === id)
+                if (index !== -1) {
+                    this.animals[index] = animal
+                }
+
+                return animal
+            } catch (err) {
+                this.error = 'Erro ao carregar animal'
+                throw err
+            } finally {
+                this.loading = false
+            }
+        },
         async fetchAnimals(params: SearchAnimalsParams = {}) {
             this.loading = true
             this.error = null
