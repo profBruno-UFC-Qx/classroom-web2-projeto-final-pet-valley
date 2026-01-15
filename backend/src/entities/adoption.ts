@@ -4,21 +4,29 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
 } from "typeorm";
+import { Animal } from "./animal";
+import { User } from "./user";
+import { Organization } from "./organization";
 
 @Entity()
 export class Adoption {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "text" })
-  animalId: string;
+  @ManyToOne(() => Animal)
+  @JoinColumn({ name: 'animalId' })
+  animal: Animal;
 
-  @Column({ type: "text" })
-  adopterUserId: string;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'adopterUserId' })
+  adopterUser: User;
 
-  @Column({ type: "text" })
-  organizationId: string;
+  @ManyToOne(() => Organization)
+  @JoinColumn({ name: 'organizationId' })
+  organization: Organization;
 
   @Column({ type: "text", enum: ["active", "completed", "cancelled"] })
   status: "active" | "completed" | "cancelled";
@@ -56,6 +64,9 @@ export class Adoption {
   // passo 4
   @Column({ type: "boolean", default: false })
   contract_documentSent: boolean;
+
+  @Column({ type: "text", default: "" })
+  contract_content: string;
 
   @Column({ type: "boolean", default: false })
   contract_documentSigned: boolean;

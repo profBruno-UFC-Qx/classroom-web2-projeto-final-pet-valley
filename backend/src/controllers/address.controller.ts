@@ -85,11 +85,6 @@ export const getAddressById = async (req: AuthenticatedRequest, res: Response) =
             return res.status(404).json({ message: 'Address not found' });
         }
 
-        // Apenas o dono do endereço ou admin pode ver
-        if (req.user?.role !== 'admin' && req.user?.id !== address.ownerId) {
-            return res.status(403).json({ message: 'Access denied' });
-        }
-
         res.status(200).json(address);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

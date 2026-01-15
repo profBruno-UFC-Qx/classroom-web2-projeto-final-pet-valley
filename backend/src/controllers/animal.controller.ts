@@ -7,6 +7,7 @@ const animalService = new AnimalService();
 
 export const createAnimal = async (req: AuthenticatedRequest, res: Response) => {
     try {
+
         // Verifica se o usuário é uma organização ou admin
         if (req.user?.role !== 'organization' && req.user?.role !== 'admin') {
             return res.status(403).json({
@@ -14,11 +15,9 @@ export const createAnimal = async (req: AuthenticatedRequest, res: Response) => 
             });
         }
 
-        // Se for organização, verifica se está tentando criar animal para ela mesma
-        if (req.user.role === 'organization' && req.user.id !== req.body.organizationId) {
-            return res.status(403).json({
-                message: 'Você só pode criar animais para sua própria organização'
-            });
+        // Garante que toda organização só irar criar animais para si mesma
+        if (req.user.role === 'organization') {
+            req.body.organizationId = req.user.id;
         }
 
         const animalData: AnimalCreateDto = req.body;
@@ -59,7 +58,6 @@ export const getAnimal = async (req: Request, res: Response) => {
 
 export const getOrganizationAnimals = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        console.log(req.user, "\n", "\n");
         const organizationId: string = req.user?.id || "";
 
         const filters = {
@@ -86,13 +84,6 @@ export const updateAnimal = async (req: AuthenticatedRequest, res: Response) => 
 
         if (!animal) {
             return res.status(404).json({ message: 'Animal não encontrado' });
-        }
-
-        // Verifica permissões
-        if (req.user?.role !== 'admin' && req.user?.id !== animal.organizationId) {
-            return res.status(403).json({
-                message: 'Você não tem permissão para atualizar este animal'
-            });
         }
 
         const updateData: AnimalUpdateDto = req.body;

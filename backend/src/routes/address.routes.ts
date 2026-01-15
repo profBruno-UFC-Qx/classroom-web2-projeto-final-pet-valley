@@ -17,10 +17,10 @@ router.use(authenticateToken);
 
 // Rotas para usuário gerenciar seu próprio endereço
 router.post('/', createAddress);
-router.get('/my-address', requireAdminOrAdopter, getMyAddress);
-router.get('/has-address', requireAdminOrAdopter, checkHasAddress);
+router.get('/my-address', getMyAddress);
+router.get('/has-address', checkHasAddress);
 router.put('/my-address', updateAddress);
-router.delete('/my-address', requireAdminOrAdopter, deleteAddress);
+router.delete('/my-address', deleteAddress);
 
 // Rota para admin buscar qualquer endereço por ID
 router.get('/:id', requireAdmin, getAddressById);

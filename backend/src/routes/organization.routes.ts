@@ -50,7 +50,7 @@ router.patch(
 );
 
 // Apenas admin pode atualizar/deletar
-router.put("/:id", authenticateToken, requireAdmin, updateOrganization);
+router.put("/:id", authenticateToken, requireAdminOrOrganization, updateOrganization);
 router.delete("/:id", authenticateToken, requireAdmin, deleteOrganization);
 
 export default router;

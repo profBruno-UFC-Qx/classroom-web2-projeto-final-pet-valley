@@ -140,6 +140,15 @@ export class AnimalService {
         return (await this.getAnimal(id)) as Animal;
     }
 
+    async adoptedAnimal(id: string): Promise<Animal> {
+        const animal = await this.getAnimal(id);
+        if (!animal) {
+            throw new Error('Animal não encontrado');
+        }
+        animal.status = 'adopted';
+        return await this.animalRepository.save(animal);
+    }
+
     async deleteAnimal(id: string): Promise<{ message: string }> {
         const animal = await this.getAnimal(id);
 

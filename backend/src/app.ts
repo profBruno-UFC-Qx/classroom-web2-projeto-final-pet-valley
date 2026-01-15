@@ -5,21 +5,18 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import "reflect-metadata";
 import AppDataSource from "./utils/database";
-
-// Rotas
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/users.routes";
 import organizationRoutes from "./routes/organization.routes";
 import addressRoutes from './routes/address.routes';
 import animalRoutes from "./routes/animal.routes";
+import adoptionRoutes from "./routes/adoption.routes";
 
-// Carregar variáveis de ambiente
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configurações do app
 app.use(helmet());
 app.use(cors());
 app.use(morgan("combined"));
@@ -40,8 +37,8 @@ app.use('/users', userRoutes);
 app.use('/organizations', organizationRoutes);
 app.use('/address', addressRoutes);
 app.use('/animals', animalRoutes);
+app.use('/adoptions', adoptionRoutes);
 
-// Rota de saúde (teste rápido)
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "OK",
@@ -50,7 +47,6 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Rota não encontrada
 app.use((req, res) => {
   res.status(404).json({
     message: "Rota não encontrada",
@@ -59,7 +55,6 @@ app.use((req, res) => {
   });
 });
 
-// Tratamento de erros genéricos
 app.use(
   (
     err: any,
