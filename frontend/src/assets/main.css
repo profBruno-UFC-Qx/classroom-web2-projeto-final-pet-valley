@@ -1,0 +1,137 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import './base.css';
+
+/* Reset e configurações globais */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+#app {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Layout principal */
+.main-content {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ajustes de responsividade */
+@media (max-width: 768px) {
+  .step-card,
+  .feature-card {
+    margin-bottom: 20px;
+  }
+
+  .hero {
+    padding: 60px 0;
+  }
+
+  .steps-section,
+  .features-section {
+    padding: 40px 0;
+  }
+}
+
+/* Customizações do PrimeVue */
+:root {
+  --primary: #dd6b20;
+  --secondary: #319795;
+  --support: #f7e9d7;
+  --accent: #285e61;
+
+  /* Componentes PrimeVue com suas cores */
+  --p-primary-color: var(--primary);
+  --p-primary-contrast-color: #ffffff;
+  --p-secondary-color: var(--secondary);
+}
+
+.p-button {
+  background: var(--primary) !important;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.p-button-secondary {
+  background: var(--secondary) !important;
+  background-color: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+  color: #fff !important;
+}
+
+.border-primary {
+  border-color: var(--primary) !important;
+}
+
+.border-secondary {
+  border-color: var(--secondary) !important;
+}
+
+.shadow-sm {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-table-rounded {
+  --btn-border-color: #319795;
+  --btn-bg-hover: #eff6ff;
+  --btn-shadow-color: rgba(59, 130, 246, 0.15);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: 2px solid var(--btn-border-color);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-table-rounded i {
+  font-size: 1rem;
+  color: var(--btn-border-color);
+}
+
+/* Hover */
+.btn-table-rounded:hover {
+  background-color: var(--btn-bg-hover);
+  box-shadow: 0 0 0 3px var(--btn-shadow-color);
+}
+
+/* Focus */
+.btn-table-rounded:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--btn-shadow-color);
+}
+
+input[type='datetime-local'] {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  background-color: #fff;
+  color: #333;
+}
+
+input[type='datetime-local']:focus {
+  border-color: #2f9c95;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(47, 156, 149, 0.25);
+}
